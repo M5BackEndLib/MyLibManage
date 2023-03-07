@@ -1,5 +1,11 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, serializers
 
+from .models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "phone", "avatar_url", "is_blocked", "is_employee"]
 
 class Token(TokenObtainPairSerializer):
     def get_token(cls, data):
