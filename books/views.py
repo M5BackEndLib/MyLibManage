@@ -4,7 +4,7 @@ from books.models import Book
 from books.permissions import IsEmployeeOrReadOnly
 from books.serializers import BookSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class BookView(generics.ListCreateAPIView):
