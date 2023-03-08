@@ -1,12 +1,26 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, serializers
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
 from .models import User
 
+
 class UserSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
     class Meta:
         model = User
-        fields = ["id", "email", "phone", "avatar_url", "is_blocked", "is_employee"]
-        read_only_fields = ["id"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "phone",
+            "password",
+            "avatar_url",
+            "is_blocked",
+            "is_employee",
+        ]
+        read_only_fields = ["id", "is_blocked"]
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class Token(TokenObtainPairSerializer):
