@@ -6,6 +6,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "phone", "avatar_url", "is_blocked", "is_employee"]
+        read_only_fields = ["id"]
+
 
 class Token(TokenObtainPairSerializer):
     def get_token(cls, data):
