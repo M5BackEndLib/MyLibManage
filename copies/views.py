@@ -18,6 +18,10 @@ class CopyView(generics.ListCreateAPIView):
 
     lookup_url_kwarg = "book_id"
 
+    def get_queryset(self):
+        book = self.kwargs["book_id"]
+        return Copy.objects.filter(book_id=book)
+
     def perform_create(self, serializer):
         book_find = get_object_or_404(Book, pk=self.kwargs["book_id"])
         serializer.save(book=book_find)
