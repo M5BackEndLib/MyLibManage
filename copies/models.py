@@ -6,6 +6,7 @@ from django.utils import timezone
 class Copy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     added_in = models.DateField(auto_now=True)
+    disponibility = models.BooleanField(default=True)
     book = models.ForeignKey(
         "books.Book", on_delete=models.CASCADE, related_name="copies"
     )
