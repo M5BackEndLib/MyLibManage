@@ -9,5 +9,4 @@ class Book(models.Model):
     author = models.CharField(max_length=50)
     cover = models.CharField(max_length=255)
     synopsis = models.CharField(max_length=155)
-    status = models.BooleanField()
     follows = models.ManyToManyField("users.User", related_name="follow_books")
