@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "users",
     "books",
     "copies",
+    "drf_yasg"
 ]
 
 MIDDLEWARE = [
