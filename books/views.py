@@ -30,6 +30,7 @@ class FollowView(generics.UpdateAPIView):
     lookup_url_kwarg = "book_id"
 
     def get_object(self):
+        self.check_object_permissions(self.request, obj=self.request.user)
         book_id = self.kwargs["book_id"]
         book_find = get_object_or_404(Book, id=book_id)
 
