@@ -19,7 +19,7 @@ class CopyLoan(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     loan_in = models.DateTimeField(default=timezone.now)
     returned = models.BooleanField(default=False)
-    returned_in = models.DateTimeField()
+    returned_in = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
