@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404, render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
@@ -11,6 +12,7 @@ from .models import Copy, CopyLoan
 from .serializers import CopyLoanSerializer, CopySerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.core.mail import send_mass_mail
 
 
 # Create your views here.
@@ -34,14 +36,18 @@ class CopyView(generics.ListCreateAPIView):
 
 class CopyLoanCreateAPIView(CreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsEmployeeOrReadOnly]
     queryset = CopyLoan.objects.all()
     serializer_class = CopyLoanSerializer
 
     def perform_create(self, serializer):
+        self.check_object_permissions(obj=self.request.user, request=self.request)
         copy_id = self.kwargs.get("id")
         copy = get_object_or_404(Copy, id=copy_id)
-        serializer.save(user=self.request.user, copy=copy)
+        user = get_object_or_404(User, email=self.request.body["email"])
+        if user.is_blocked:
+            return Response({"detail": "user is blocked"}, 404)
+        serializer.save(user=user, copy=copy)
 
 
 class UserLoanListView(ListAPIView):
@@ -86,6 +92,19 @@ class ReturnCopyView(generics.UpdateAPIView):
         copy = copy_loan.copy
         copy.disponibility = True
         copy.save()
+
+        # signaling followers
+        book = copy.book
+        mail_list = []
+        for user in book.follows:
+            mail_list.append(user.email)
+        message = (
+            "Book Copy Available",
+            f"Hello! One copy of the book {book.title} is available now.",
+            settings.EMAIL_HOST,
+            mail_list,
+        )
+        send_mass_mail(message)
 
         return Response(
             {"detail": "Livro retornado com sucesso."}, status=status.HTTP_200_OK
