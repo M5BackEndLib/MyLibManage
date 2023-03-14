@@ -32,7 +32,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["backenddjangom5-production.up.railway.app", "0.0.0.0"]
+ALLOWED_HOSTS = [
+    "backenddjangom5-production.up.railway.app",
+    "0.0.0.0",
+    "localhost",
+    "127.0.0.1:8000",
+]
 
 RAILWAY_STATIC_URL = os.getenv("RAILWAY_STATIC_URL")
 
@@ -52,7 +57,7 @@ INSTALLED_APPS = [
     "users",
     "books",
     "copies",
-    "drf_yasg"
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -96,7 +101,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB_NAME"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "0.0.0.0",
+        "HOST": "localhost",
         "PORT": 5432,
     }
 }

@@ -7,7 +7,7 @@ SAFE_METHODS = ("GET", "HEAD", "OPTIONS")
 
 class IsEmployeeOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view: View, obj: User) -> bool:
-        return obj.is_employee
+        return request.user.is_employee
 
 
 class IsNotEmployee(permissions.BasePermission):
