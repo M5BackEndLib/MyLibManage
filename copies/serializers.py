@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Copy, CopyLoan
 from datetime import datetime, timedelta
+import ipdb
 
 
 class CopySerializer(serializers.ModelSerializer):
@@ -20,10 +21,11 @@ class CopySerializer(serializers.ModelSerializer):
 
 class CopyLoanSerializer(serializers.ModelSerializer):
     copy = CopySerializer(read_only=True)
+    user_id = serializers.CharField(read_only=True, source="user.id")
 
     class Meta:
         model = CopyLoan
-        fields = ("id", "loan_in", "returned", "returned_in", "copy")
+        fields = ("id", "loan_in", "returned", "returned_in", "copy", "user_id")
         read_only_fields = fields
 
     def create(self, validated_data):
@@ -32,6 +34,7 @@ class CopyLoanSerializer(serializers.ModelSerializer):
         existing_copy_loans = CopyLoan.objects.filter(user=user, returned=False)
         if existing_copy_loans.exists():
             raise serializers.ValidationError("User already has a copy on loan")
+        print(copy.disponibility)
         if not copy.disponibility:
             raise serializers.ValidationError("Copy not available for loan")
 
@@ -47,10 +50,7 @@ class CopyLoanSerializer(serializers.ModelSerializer):
         if user.is_blocked:
             raise serializers.ValidationError({"error": "Este usuário está bloqueado."})
 
-        copy_loan = CopyLoan.objects.create(
-            user=user,
-            copy=copy,
-        )
+        copy_loan = CopyLoan.objects.create(user=user, copy=copy)
         copy.disponibility = False
         copy.save()
         return copy_loan
