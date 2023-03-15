@@ -60,6 +60,8 @@ class UserLoanListView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_employee:
+            return CopyLoan.objects.all()
         queryset = user.user_loan_copies.all()
         return queryset
 
