@@ -6,6 +6,10 @@ import ipdb
 
 class CopySerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True, source="book.title")
+    return_estimated = serializers.SerializerMethodField()
+
+    def get_return_estimated():
+        ...
 
     class Meta:
         model = Copy
